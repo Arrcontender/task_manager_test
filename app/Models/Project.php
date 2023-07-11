@@ -9,8 +9,15 @@ class Project extends Model
 {
     use HasFactory;
 
-    public function users()
+    protected $table = 'projects';
+
+    public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

@@ -5,31 +5,36 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Отдает объект проекта
      */
-    public function index()
+    public function show($id)
     {
-        //
+        return new ProjectResource(Project::find($id));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Отдает задачи проекта (с фильтром по пользователю)
      */
-    public function store(Request $request)
+    public function showTasks($id, Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Project $project)
-    {
-        //
+        $userId = $request->get('user_id');
+        $tasks = new ProjectResource(Project::find($id)->first());
+        $tasks = $tasks['tasks'];
+        $res = $tasks;
+        if ($userId) {
+            $res = [];
+            foreach ($tasks as $task) {
+                if ($task['user_id'] == $userId) {
+                    $res[] = $task;
+                }
+            }
+        }
+        return $res;
     }
 
     /**
