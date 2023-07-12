@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,14 @@ Route::get('/user/{id}', [UserController::class, 'show']);
 Route::get('/user/{id}/projects', [UserController::class, 'showProjects']);
 Route::get('/projects/{id}', [ProjectController::class, 'show']);
 Route::get('/projects/{id}/simple-tasks-list', [ProjectController::class, 'showTasks']);
+
+Route::post('/projects', [ProjectController::class, 'store']);
+Route::post('/projects/{id}/tasks', [TaskController::class, 'store']);
+Route::post('/projects', [ProjectController::class, 'store']);
+Route::post('/projects/{id}/tasks', [TaskController::class, 'store']);
+
+Route::put('/projects/{id}', [ProjectController::class, 'update']);
+Route::put('/projects/{id}/tasks/{task_id}', [TaskController::class, 'update']);
+
+Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
+Route::delete('/projects/{id}/tasks/{task_id}', [TaskController::class, 'destroy']);

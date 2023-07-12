@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Http\Requests\ProjectRequest;
 use App\Http\Resources\ProjectResource;
 
 class ProjectController extends Controller
@@ -14,7 +15,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        return new ProjectResource(Project::find($id));
+        return new ProjectResource(Project::findOrFail($id));
     }
 
     /**
@@ -23,9 +24,10 @@ class ProjectController extends Controller
     public function showTasks($id, Request $request)
     {
         $userId = $request->get('user_id');
-        $tasks = new ProjectResource(Project::find($id)->first());
+        $tasks = new ProjectResource(Project::findOrFail($id)->first());
         $tasks = $tasks['tasks'];
         $res = $tasks;
+
         if ($userId) {
             $res = [];
             foreach ($tasks as $task) {
@@ -34,22 +36,40 @@ class ProjectController extends Controller
                 }
             }
         }
+
         return $res;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Создает новый проект
      */
-    public function update(Request $request, Project $project)
+    public function store(ProjectRequest $request)
     {
-        //
+        $project = Project::create($request->validated());
+        return $project;
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Обновляет проект
      */
-    public function destroy(Project $project)
+    public function update(ProjectRequest $request, int $id)
     {
-        //
+        $project = Project::findOrFail($id);
+        $project->update($request->validated());
+        $project->save();
+        return response()->json($project);
+    }
+
+    /**
+     * Удаляет задачу
+     */
+    public function destroy(int $id)
+    {
+        $project = Project::findOrFail($id);
+        $project->delete();
+        $returnData = array(
+            'status' => 'success'
+        );
+        return response()->json($returnData, 200);
     }
 }

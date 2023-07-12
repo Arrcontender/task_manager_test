@@ -12,18 +12,18 @@ class UserController extends Controller
     /**
      * Отдает объект пользователя
      */
-    public function show($id)
+    public function show(int $id)
     {
-        return new UserResource(User::find($id));
+        return new UserResource(User::findOrFail($id));
     }
 
     /**
      * Отдает проекты пользователя (с фильтром)
      */
-    public function showProjects($id, Request $request)
+    public function showProjects(int $id, Request $request)
     {
         $search = $request->get('search');
-        $projects = new UserResource(User::find($id)->first());
+        $projects = new UserResource(User::findOrFail($id)->first());
         $projects = $projects['projects'];
         $res = $projects;
         if ($search) {
@@ -35,21 +35,5 @@ class UserController extends Controller
             }
         }
         return $res;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
     }
 }
