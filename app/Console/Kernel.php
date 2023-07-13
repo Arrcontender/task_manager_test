@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('app:clean-up-tasks')->dailyAt('09:45')
+            ->timezone('Europe/Moscow');
     }
 
     /**
